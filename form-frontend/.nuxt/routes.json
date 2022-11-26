@@ -1,0 +1,30 @@
+[
+  {
+    "name": "inspire",
+    "path": "/inspire",
+    "component": "/home/sultan/Documents/DATA KULIAH SEMESTER 5/Project-RPL/form-ti/form-frontend/pages/inspire.vue",
+    "chunkName": "pages/inspire",
+    "_name": "_475cf5ff"
+  },
+  {
+    "name": "login",
+    "path": "/login",
+    "component": "/home/sultan/Documents/DATA KULIAH SEMESTER 5/Project-RPL/form-ti/form-frontend/pages/login.vue",
+    "chunkName": "pages/login",
+    "_name": "_a5d0db64"
+  },
+  {
+    "name": "register",
+    "path": "/register",
+    "component": "/home/sultan/Documents/DATA KULIAH SEMESTER 5/Project-RPL/form-ti/form-frontend/pages/register.vue",
+    "chunkName": "pages/register",
+    "_name": "_af488864"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/home/sultan/Documents/DATA KULIAH SEMESTER 5/Project-RPL/form-ti/form-frontend/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_39202192"
+  }
+]
