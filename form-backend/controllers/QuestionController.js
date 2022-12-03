@@ -4,6 +4,27 @@ import Form from "../models/Form.js"
 const allowedTypes = ["Text", "Email", "Radio", "Checkbox", "Dropdown"];
 
 class QuestionController {
+    async index(req, res) {
+        try {
+            const form = await Form.findOne({_id: req.params.id, userId: req.jwt.id})
+            if (!form) {throw {code: 404, message: "FORM_NOT_FOUND"}}
+
+            return res.status(200)
+                .json({
+                    status: true,
+                    message: "FORM_FOUND",
+                    form
+                })
+        } catch (error) {
+            return res.status(error.code || 500)
+                .json({
+                    status: false,
+                    message: error.message
+                })
+        }
+    }
+
+    
     async store(req, res) {
         try {
             if(!req.params.id) {throw {code: 400, message: "REQUIRED_FORM_ID"}}
@@ -14,7 +35,7 @@ class QuestionController {
                 question: null,
                 type: "text",
                 required: false,
-                option: []
+                options: []
             }
 
             // update form
@@ -81,7 +102,25 @@ class QuestionController {
 
     async destroy(req, res) {
         try {
-            
+            if(!req.params.id) { throw { code: 400, message: "REQUIRED_FORM_ID" } }
+            if(!req.params.questionId) { throw { code: 400, message: "REQUIRED_QUESTION_ID" } }
+            if(!mongoose.Types.ObjectId.isValid(req.params.id)) { throw { code: 400, message: "INVALID_ID" } }
+            if(!mongoose.Types.ObjectId.isValid(req.params.questionId)) { throw { code: 400, message: "INVALID_ID" } }
+
+            // update form
+            const form = await Form.findOneAndUpdate(
+                    { _id: req.params.id, userId: req.jwt.id },
+                    {$pull: {questions: {id: mongoose.Types.ObjectId(req.params.questionId)}}},
+                    {new: true}
+                )
+            if(!form) {throw {code: 400, message: "DELETE_QUESTION_FAILED"}}
+
+            return res.status(200)
+                .json({
+                    status: true,
+                    message: "DELETE_QUESTION_SUCCESS",
+                    form
+                })
         } catch (error) {
             return res.status(error.code || 500)
                 .json({
