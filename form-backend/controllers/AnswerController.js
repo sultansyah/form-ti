@@ -3,6 +3,9 @@ import Form from "../models/Form.js"
 import Answer from "../models/Answer.js"
 import answerDuplicate from "../library/answerDuplicate.js"
 import checkQuestionIsRequiredAndIsValueEmpty from "../library/checkQuestionIsRequiredAndIsValueEmpty.js"
+import optionValueNotExist from "../library/optionValueNoteExist.js"
+import questionIdNotValid from "../library/questionIdNotValid.js"
+import emailNotValid from "../library/emailNotValid.js"
 
 class AnswerController {
     async store(req, res) {
@@ -18,8 +21,16 @@ class AnswerController {
             const questionRequiredEmpty = await checkQuestionIsRequiredAndIsValueEmpty(form, req.body.answers)
             if(questionRequiredEmpty) {throw {code: 400, message: "QUESTION_REQUIRED_BUT_EMPTY"}}
 
-            let fields = {}
+            const optionNotExist = await optionValueNotExist(form, req.body.answers)
+            if(optionNotExist.length > 0) {throw {code: 400, message: "OPTION_VALUE_IS_NOT_EXIST", question: optionNotExist[0].question}}
 
+            const questionNotExist = await questionIdNotValid(form, req.body.answers)
+            if(questionNotExist.length > 0) {throw {code: 400, message: "QUESTION_IS_NOT_EXIST", question: questionNotExist[0].question}}
+
+            const emailIsNotValid = await emailNotValid(form, req.body.answers)
+            if(emailIsNotValid.length > 0) {throw {code: 400, message: "EMAIL_IS_NOT_VALID", question: emailIsNotValid[0].question}}
+
+            let fields = {}
             req.body.answers.forEach(answer => {
                 fields[answer.questionId] = answer.value
             })
@@ -42,7 +53,8 @@ class AnswerController {
             return res.status(error.code || 500)
                 .json({
                     status: false,
-                    message: error.message
+                    message: error.message,
+                    question: error.question || null
                 })
         }
     }
