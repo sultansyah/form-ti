@@ -5,6 +5,7 @@ import QuestionController from "../controllers/QuestionController.js"
 import OptionController from "../controllers/OptionController.js"
 import AnswerController from "../controllers/AnswerController.js"
 import jwtAuth from "../middlewares/jwtAuth.js"
+import InviteController from "../controllers/InviteController.js"
 
 const router = express.Router()
 
@@ -34,5 +35,9 @@ router.delete('/forms/:id/questions/:questionId/options/:optionId', jwtAuth(), O
 
 // Answers
 router.post('/answers/:formId', jwtAuth(), AnswerController.store)
+
+// Invites
+router.post('/forms/:id/invites', jwtAuth(), InviteController.store)
+router.delete('/forms/:id/invites', jwtAuth(), InviteController.destroy)
 
 export default router
