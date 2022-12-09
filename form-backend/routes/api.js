@@ -37,6 +37,7 @@ router.delete('/forms/:id/questions/:questionId/options/:optionId', jwtAuth(), O
 router.post('/answers/:formId', jwtAuth(), AnswerController.store)
 
 // Invites
+router.get('/forms/:id/invites', jwtAuth(), InviteController.index)
 router.post('/forms/:id/invites', jwtAuth(), InviteController.store)
 router.delete('/forms/:id/invites', jwtAuth(), InviteController.destroy)
 
