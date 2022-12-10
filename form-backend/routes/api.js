@@ -6,6 +6,7 @@ import OptionController from "../controllers/OptionController.js"
 import AnswerController from "../controllers/AnswerController.js"
 import jwtAuth from "../middlewares/jwtAuth.js"
 import InviteController from "../controllers/InviteController.js"
+import ResponseController from "../controllers/ResponseController.js"
 
 const router = express.Router()
 
@@ -33,12 +34,15 @@ router.post('/forms/:id/questions/:questionId/options', jwtAuth(), OptionControl
 router.put('/forms/:id/questions/:questionId/options/:optionId', jwtAuth(), OptionController.update)
 router.delete('/forms/:id/questions/:questionId/options/:optionId', jwtAuth(), OptionController.destroy)
 
-// Answers
-router.post('/answers/:formId', jwtAuth(), AnswerController.store)
-
 // Invites
 router.get('/forms/:id/invites', jwtAuth(), InviteController.index)
 router.post('/forms/:id/invites', jwtAuth(), InviteController.store)
 router.delete('/forms/:id/invites', jwtAuth(), InviteController.destroy)
+
+// Answers
+router.post('/answers/:formId', jwtAuth(), AnswerController.store)
+
+// Responses
+router.get('/responses/:formId/lists', jwtAuth(), ResponseController.lists)
 
 export default router

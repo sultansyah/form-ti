@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose"
+import mongoose from "mongoose"
 import Form from "../models/Form.js"
 import User from "../models/User.js"
 
