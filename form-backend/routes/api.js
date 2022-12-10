@@ -44,5 +44,6 @@ router.post('/answers/:formId', jwtAuth(), AnswerController.store)
 
 // Responses
 router.get('/responses/:formId/lists', jwtAuth(), ResponseController.lists)
+router.get('/responses/:formId/summaries', jwtAuth(), ResponseController.summaries)
 
 export default router

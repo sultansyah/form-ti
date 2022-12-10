@@ -3,6 +3,7 @@ import User from "../models/User.js"
 import emailExist from "../library/emailExist.js"
 import bcrypt from "bcrypt"
 import jsonwebtoken from "jsonwebtoken"
+import isEmailValid from "../library/isEmailValid.js"
 
 const env = dotenv.config().parsed
 
@@ -20,8 +21,8 @@ class AuthController {
             if(!req.body.fullname) { throw { code: 400, message: "FULLNAME_IS_REQUIRED" } }
             if(!req.body.email) { throw { code: 400, message: "EMAIL_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
-
             if(req.body.password.length < 6) { throw { code: 400, message: "PASSWORD_MINIMUM_6_CHARACTERS" } }
+            if(!isEmailValid(req.body.email)) { throw { code: 400, message: "INVALID_EMAIL" } }
             
             const isEmailExits = await emailExist(req.body.email)
             if(isEmailExits) { throw { code: 500, message: "EMAIL_ALREADY_EXIST" } }
@@ -36,11 +37,18 @@ class AuthController {
             })
             if(!user) { throw { code: 500, message: "USER_REGISTER_FAILED" } }
 
+            // generate token
+            let payload = { id: user._id }
+            const accessToken = await generateAccessToken(payload) 
+            const refreshToken = await generateRefreshToken(payload)
+
             return res.status(200)
                 .json({
                     status: true,
                     message: "USER_REGISTER_SUCCESS",
-                    user
+                    fullname: user.fullname,
+                    accessToken,
+                    refreshToken
                 })
 
         } catch(error) {

@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import Form from "../models/Form.js"
 import User from "../models/User.js"
+import isEmailValid from "../library/isEmailValid.js"
 
 class InviteController {
     async index(req, res) {
@@ -42,7 +43,7 @@ class InviteController {
             if(emailInvited) {throw {code: 400, message: "EMAIL_ALREADY_INVITED"}}
 
             // check is email valid
-            if(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(req.body.email) === false) {throw {code: 400, message: "INVALID_EMAIL"}}
+            if(!isEmailValid(req.body.email)) {throw {code: 400, message: "INVALID_EMAIL"}}
 
             const form = await Form.findOneAndUpdate(
                 {_id: req.params.id, userId: req.jwt.id},
