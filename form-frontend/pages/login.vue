@@ -1,75 +1,97 @@
 <template>
     <v-row>
         <v-col cols="10" offset="1" md="4" offset-md="4">
-            <v-card>
-              <v-toolbar dark color="primary">Login</v-toolbar>
+            <v-card class="mb-2">
+                <v-toolbar color="primary" dark>Login</v-toolbar>
+                <v-card-text>
+                    <v-alert v-if="isError" color="red lighten-2" dark>
+                        {{ $t(message) }}
+                    </v-alert>
 
-              <v-card-text>
-                <v-from>
-                  <v-text-field
-                  label="Email"
-                  :rules="rules.email"
-                  v-model="form.email"
-                  required
-                  ></v-text-field>
-
-                  <v-text-field
-                  label="Password"
-                  :rules="rules.password"
-                  v-model="form.password"
-                  type="password"
-                  required
-                  ></v-text-field>
-                </v-from>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-space></v-space>
-                <v-btn color="primary">Login</v-btn>
-              </v-card-actions>
+                    <v-form>
+                        <v-text-field
+                            name="email"
+                            label="Nim"
+                            type="text"
+                            v-model="form.nim"
+                        />
+                        <v-text-field
+                            name="password"
+                            label="Password"
+                            type="password"
+                            v-model="form.password"
+                            @keydown.enter="onSubmit"
+                        />
+                    </v-form>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        :loading="isDisable"
+                        color="primary"
+                        @click="onSubmit"
+                    >
+                        Login
+                    </v-btn>
+                </v-card-actions>
             </v-card>
-
-            <div class="d-flex align-baseline">
-              <p>Kamu sudah punya akun?</p>
-              <v-btn
-              text
-              plain
-              :ripple="false"
-              to="/register"
-              color="primary"
-              class="pl-0"
-              >Login</v-btn>
-            </div>
-
+            <!-- <div>
+                <p class="d-flex align-baseline">
+                    Kamu sudah punya akun ?
+                    <v-btn
+                        to="/register"
+                        class="pl-2 btn-no-height btn-auth"
+                        plain
+                        text
+                        :ripple="false"
+                        >Register</v-btn
+                    >
+                </p>
+            </div> -->
         </v-col>
     </v-row>
-  </template>
-  
-  <script>
-  export default {
-    layout: 'auth',
-    data() {
-      return {
-        isLoading: false,
-        form: {
-          fullname: '',
-          email: '',
-          password: '',
-          password_confirmation: '',
-        },
+</template>
 
-        rules: {
-          email: [
-            v => !!v || "E-mail is required",
-            v => /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(v) || 'E-mail must be valid',
-          ],
-          password: [
-            v => !!v || 'Password is required',
-            v => v.length >= 6 || 'Password must be at least 6 characters'
-          ]
+<script>
+export default {
+    layout: 'auth',
+    middleware: ['unauthenticated'],
+    data() {
+        return {
+            isDisable: false,
+            isError: false,
+            message: '',
+            form: {
+                nim: '',
+                password: '',
+            },
+        }
+    },
+    methods: {
+        async onSubmit() {
+            try {
+                this.isDisable = true
+
+                const auth = await this.$store.dispatch('auth/login', this.form)
+
+                this.isDisable = false
+
+                this.$router.push('/')
+            } catch (err) {
+                this.isError = true
+                this.isDisable = false
+
+                this.message = err.response
+                    ? err.response.data.message
+                    : 'SERVER_ERROR'
+            }
         },
-      }
-    }
-  }
-  </script>
-   
+    },
+    mounted() {
+        if (this.$route.params.message == 'AUTH_REQUIRED') {
+            this.message = this.$route.params.message
+            this.isError = true
+        }
+    },
+}
+</script>

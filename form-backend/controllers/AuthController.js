@@ -62,10 +62,10 @@ class AuthController {
 
     async login(req, res) {
         try {
-            if(!req.body.email) { throw { code: 400, message: "EMAIL_IS_REQUIRED" } }
+            if(!req.body.nim) { throw { code: 400, message: "NIM_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
 
-            const user = await User.findOne({ email: req.body.email })
+            const user = await User.findOne({ email: req.body.nim })
             if(!user) throw { code: 404, message: "USER_NOT_FOUND" }
 
             const isPasswordValid = await bcrypt.compareSync(req.body.password, user.password)

@@ -12,7 +12,7 @@ const router = express.Router()
 
 // Auth
 router.post('/register', AuthController.register)
-router.post('/login', AuthController.login)
+router.post('/auth/login', AuthController.login)
 router.post('/refresh-token', AuthController.refreshToken)
 
 // Form

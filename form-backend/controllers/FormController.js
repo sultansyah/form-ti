@@ -16,7 +16,8 @@ class FormController {
                     status: true,
                     message: "FORMS_FOUND",
                     total: form.length,
-                    form
+                    totalDocs: form.length,
+                    forms: form
                 })
         } catch (error){
             return res.status(error.code || 500)
