@@ -5,7 +5,7 @@ const Schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    noInduk: {
         type: String,
         required: true,
         unique: true,
@@ -13,6 +13,12 @@ const Schema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    level: {
+        type: String,
+        enum: ['admin', 'mahasiswa'],
+        default: 'mahasiswa',
+        required: true,
     },
     status: {
         type: String,

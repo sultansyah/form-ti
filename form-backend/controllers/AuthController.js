@@ -1,9 +1,8 @@
 import dotenv from "dotenv"
 import User from "../models/User.js"
-import emailExist from "../library/emailExist.js"
+import noIndukExist from "../library/noIndukExist.js"
 import bcrypt from "bcrypt"
 import jsonwebtoken from "jsonwebtoken"
-import isEmailValid from "../library/isEmailValid.js"
 
 const env = dotenv.config().parsed
 
@@ -19,20 +18,18 @@ class AuthController {
     async register(req, res) {
         try {
             if(!req.body.fullname) { throw { code: 400, message: "FULLNAME_IS_REQUIRED" } }
-            if(!req.body.email) { throw { code: 400, message: "EMAIL_IS_REQUIRED" } }
+            if(!req.body.noInduk) { throw { code: 400, message: "NO_INDUK_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
-            if(req.body.password.length < 6) { throw { code: 400, message: "PASSWORD_MINIMUM_6_CHARACTERS" } }
-            if(!isEmailValid(req.body.email)) { throw { code: 400, message: "INVALID_EMAIL" } }
             
-            const isEmailExits = await emailExist(req.body.email)
-            if(isEmailExits) { throw { code: 500, message: "EMAIL_ALREADY_EXIST" } }
+            const isNoIndukExist = await noIndukExist(req.body.noInduk)
+            if(isNoIndukExist) { throw { code: 500, message: "NO_INDUK_ALREADY_EXIST" } }
 
             const salt = await bcrypt.genSalt(10)
             const hash = await bcrypt.hash(req.body.password, salt)
 
             const user = await User.create({
                 fullname: req.body.fullname,
-                email: req.body.email,
+                noInduk: req.body.noInduk,
                 password: hash,
             })
             if(!user) { throw { code: 500, message: "USER_REGISTER_FAILED" } }
@@ -62,10 +59,10 @@ class AuthController {
 
     async login(req, res) {
         try {
-            if(!req.body.nim) { throw { code: 400, message: "NIM_IS_REQUIRED" } }
+            if(!req.body.noInduk) { throw { code: 400, message: "NO_INDUK_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
 
-            const user = await User.findOne({ email: req.body.nim })
+            const user = await User.findOne({ nim: req.body.noInduk })
             if(!user) throw { code: 404, message: "USER_NOT_FOUND" }
 
             const isPasswordValid = await bcrypt.compareSync(req.body.password, user.password)

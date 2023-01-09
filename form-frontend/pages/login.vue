@@ -35,7 +35,7 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-            <!-- <div>
+            <div>
                 <p class="d-flex align-baseline">
                     Kamu sudah punya akun ?
                     <v-btn
@@ -47,7 +47,7 @@
                         >Register</v-btn
                     >
                 </p>
-            </div> -->
+            </div>
         </v-col>
     </v-row>
 </template>

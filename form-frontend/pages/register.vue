@@ -5,6 +5,24 @@
                 <v-toolbar color="primary" dark>Register</v-toolbar>
                 <v-card-text>
                     <v-form ref="form">
+                        <v-radio-group
+                            label="Level"
+                            v-model="form.level"
+                            mandatory
+                        >
+                            <v-radio
+                                label="Admin"
+                                value="admin"
+                            />
+                            <v-radio
+                                label="Mahasiswa"
+                                value="mahasiswa"
+                            />
+                            <v-radio
+                                label="Dosen"
+                                value="dosen"
+                            />
+                        </v-radio-group>
                         <v-text-field
                             name="fullname"
                             label="Full Name"
@@ -13,12 +31,13 @@
                             v-model="form.fullname"
                         />
                         <v-text-field
-                            name="email"
-                            label="Email"
-                            type="email"
-                            :rules="rules.email"
-                            v-model="form.email"
-                            @keydown="checkEmailExist"
+                            name="noInduk"
+                            label="Nomor Induk"
+                            type="text"
+                            :rules="rules.noInduk"
+                            v-model="form.noInduk"
+                            @keydown="checkNoIndukExist"
+                            @input="setPassword"
                         />
                         <v-text-field
                             name="password"
@@ -26,14 +45,10 @@
                             type="password"
                             :rules="rules.password"
                             v-model="form.password"
-                        />
-                        <v-text-field
-                            name="retype_password"
-                            label="Re-Password"
-                            type="password"
-                            :rules="rules.retype_password"
-                            v-model="form.retype_password"
                             @keydown.enter="onSubmit"
+                        />
+                        <v-badge 
+                            content="Password terisi otomatis dengan NIM"
                         />
                     </v-form>
                 </v-card-text>
@@ -50,15 +65,15 @@
             </v-card>
             <div>
                 <p class="d-flex align-baseline">
-                    Kamu belum punya akun ?
+                    Kamu sudah punya akun ?
                     <v-btn
-                            to="/login"
-                            class="pl-2 btn-no-height btn-auth"
-                            plain
-                            text
-                            :ripple="false"
-                            >Login</v-btn
-                        >
+                        to="/login"
+                        class="pl-2 btn-no-height btn-auth"
+                        plain
+                        text
+                        :ripple="false"
+                        >Login</v-btn
+                    >
                 </p>
             </div>
         </v-col>
@@ -71,45 +86,39 @@ export default {
     middleware: ['unauthenticated'],
     data() {
         return {
-            emailExist: false,
+            nimExist: false,
             isDisable: false,
             form: {
                 fullname: '',
-                email: '',
+                nim: '',
                 password: '',
-                retype_password: '',
+                level: '',
             },
             rules: {
                 fullname: [
                     (v) =>
                         !!v || this.$t('FIELD_REQUIRED', { field: 'Fullname' }),
                 ],
-                email: [
-                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Email' }),
-                    (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),
-                    (v) => !this.emailExist || this.$t('EMAIL_EXIST'),
+                nim: [
+                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Nim' }),,
+                    (v) => !this.nimExist || this.$t('NIM_EXIST'),
                 ],
                 password: [
                     (v) =>
                         !!v || this.$t('FIELD_REQUIRED', { field: 'Password' }),
-                    (v) =>
-                        v.length >= 6 ||
-                        this.$t('FIELD_MIN', { field: 'Password', min: 6 }),
-                ],
-                retype_password: [
-                    (v) =>
-                        v === this.form.password ||
-                        this.$t('FIELD_CONFIRM', {
-                            field: 'Password',
-                            confirm: 'Re-Password',
-                        }),
+                    // (v) =>
+                    //     v.length >= 6 ||
+                    //     this.$t('FIELD_MIN', { field: 'Password', min: 6 }),
                 ],
             },
         }
     },
     methods: {
-        checkEmailExist() {
-            this.emailExist = false
+        setPassword(e) {
+            this.form.password = this.form.nim
+        },
+        checkNimExist() {
+            this.nimExist = false
         },
         onSubmit() {
             if (this.$refs.form.validate()) {
@@ -124,8 +133,8 @@ export default {
                         this.$router.push('/login')
                     })
                     .catch((error) => {
-                        if (error.response.data.message == 'EMAIL_EXIST') {
-                            this.emailExist = true
+                        if (error.response.data.message == 'NIM_EXIST') {
+                            this.nimExist = true
                             this.$refs.form.validate()
                         }
 
