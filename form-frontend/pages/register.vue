@@ -31,6 +31,34 @@
                             v-model="form.fullname"
                         />
                         <v-text-field
+                            name="jurusan"
+                            label="Jurusan"
+                            type="text"
+                            :rules="rules.jurusan"
+                            v-model="form.jurusan"
+                        />
+                        <v-text-field
+                            name="prodi"
+                            label="Prodi"
+                            type="text"
+                            :rules="rules.prodi"
+                            v-model="form.prodi"
+                        />
+                        <v-text-field
+                            name="kotaLahir"
+                            label="Kota Lahir"
+                            type="text"
+                            :rules="rules.kotaLahir"
+                            v-model="form.kotaLahir"
+                        />
+                        <v-text-field
+                            name="tanggalLahir"
+                            label="Tanggal Lahir"
+                            type="date"
+                            :rules="rules.tanggalLahir"
+                            v-model="form.tanggalLahir"
+                        />
+                        <v-text-field
                             name="noInduk"
                             label="Nomor Induk"
                             type="text"
@@ -48,7 +76,7 @@
                             @keydown.enter="onSubmit"
                         />
                         <v-badge 
-                            content="Password terisi otomatis dengan NIM"
+                            content="Password terisi otomatis dengan Nomor Induk"
                         />
                     </v-form>
                 </v-card-text>
@@ -86,22 +114,42 @@ export default {
     middleware: ['unauthenticated'],
     data() {
         return {
-            nimExist: false,
+            noIndukExist: false,
             isDisable: false,
             form: {
                 fullname: '',
-                nim: '',
+                noInduk: '',
                 password: '',
                 level: '',
+                jurusan: '',
+                prodi: '',
+                kotaLahir: '',
+                tanggalLahir: '',
             },
             rules: {
                 fullname: [
                     (v) =>
                         !!v || this.$t('FIELD_REQUIRED', { field: 'Fullname' }),
                 ],
-                nim: [
-                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Nim' }),,
-                    (v) => !this.nimExist || this.$t('NIM_EXIST'),
+                jurusan: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Jurusan' }),
+                ],
+                prodi: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Prodi' }),
+                ],
+                kotaLahir: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Kota Lahir' }),
+                ],
+                tanggalLahir: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Tanggal Lahir' }),
+                ],
+                noInduk: [
+                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Nomor Induk' }),,
+                    (v) => !this.noIndukExist || this.$t('NO_INDUK_EXIST'),
                 ],
                 password: [
                     (v) =>
@@ -115,10 +163,10 @@ export default {
     },
     methods: {
         setPassword(e) {
-            this.form.password = this.form.nim
+            this.form.password = this.form.noInduk
         },
-        checkNimExist() {
-            this.nimExist = false
+        checkNoIndukExist() {
+            this.noIndukExist = false
         },
         onSubmit() {
             if (this.$refs.form.validate()) {
@@ -133,8 +181,8 @@ export default {
                         this.$router.push('/login')
                     })
                     .catch((error) => {
-                        if (error.response.data.message == 'NIM_EXIST') {
-                            this.nimExist = true
+                        if (error.response.data.message == 'NO_INDUK_EXIST') {
+                            this.noIndukExist = true
                             this.$refs.form.validate()
                         }
 

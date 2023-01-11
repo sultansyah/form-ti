@@ -7,13 +7,12 @@
                     <v-alert v-if="isError" color="red lighten-2" dark>
                         {{ $t(message) }}
                     </v-alert>
-
                     <v-form>
                         <v-text-field
-                            name="email"
-                            label="Nim"
+                            name="noInduk"
+                            label="Nomor Induk"
                             type="text"
-                            v-model="form.nim"
+                            v-model="form.noInduk"
                         />
                         <v-text-field
                             name="password"
@@ -62,7 +61,7 @@ export default {
             isError: false,
             message: '',
             form: {
-                nim: '',
+                noInduk: '',
                 password: '',
             },
         }

@@ -14,9 +14,25 @@ const Schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    jurusan: {
+        type: String,
+        required: true,
+    },
+    prodi: {
+        type: String,
+        required: true,
+    },
+    kotaLahir: {
+        type: String,
+        required: true,
+    },
+    tanggalLahir: {
+        type: Date,
+        required: true,
+    },
     level: {
         type: String,
-        enum: ['admin', 'mahasiswa'],
+        enum: ['admin', 'mahasiswa', 'dosen'],
         default: 'mahasiswa',
         required: true,
     },

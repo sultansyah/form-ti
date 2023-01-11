@@ -20,6 +20,11 @@ class AuthController {
             if(!req.body.fullname) { throw { code: 400, message: "FULLNAME_IS_REQUIRED" } }
             if(!req.body.noInduk) { throw { code: 400, message: "NO_INDUK_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
+            if(!req.body.jurusan) { throw { code: 400, message: "JURUSAN_IS_REQUIRED" } }
+            if(!req.body.prodi) { throw { code: 400, message: "PRODI_IS_REQUIRED" } }
+            if(!req.body.kotaLahir) { throw { code: 400, message: "KOTA_LAHIR_IS_REQUIRED" } }
+            if(!req.body.tanggalLahir) { throw { code: 400, message: "TANGGAL_LAHIR_IS_REQUIRED" } }
+            if(!req.body.level) { throw { code: 400, message: "LEVEL_IS_REQUIRED" } }
             
             const isNoIndukExist = await noIndukExist(req.body.noInduk)
             if(isNoIndukExist) { throw { code: 500, message: "NO_INDUK_ALREADY_EXIST" } }
@@ -31,6 +36,11 @@ class AuthController {
                 fullname: req.body.fullname,
                 noInduk: req.body.noInduk,
                 password: hash,
+                jurusan: req.body.jurusan,
+                prodi: req.body.prodi,
+                kotaLahir: req.body.kotaLahir,
+                tanggalLahir: req.body.tanggalLahir,
+                level: req.body.level,
             })
             if(!user) { throw { code: 500, message: "USER_REGISTER_FAILED" } }
 
@@ -62,7 +72,7 @@ class AuthController {
             if(!req.body.noInduk) { throw { code: 400, message: "NO_INDUK_IS_REQUIRED" } }
             if(!req.body.password) { throw { code: 400, message: "PASSWORD_IS_REQUIRED" } }
 
-            const user = await User.findOne({ nim: req.body.noInduk })
+            const user = await User.findOne({ noInduk: req.body.noInduk })
             if(!user) throw { code: 404, message: "USER_NOT_FOUND" }
 
             const isPasswordValid = await bcrypt.compareSync(req.body.password, user.password)

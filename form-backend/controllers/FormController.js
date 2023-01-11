@@ -5,6 +5,9 @@ import User from "../models/User.js"
 class FormController {
     async index(req, res) {
         try {
+            const user = await User.findOne({ _id: req.jwt.id })
+            if(!user) throw { code: 404, message: "USER_NOT_FOUND" }
+            
             const limit = parseInt(req.query.limit) || 10
             const page = parseInt(req.query.page) || 1
 
@@ -14,6 +17,7 @@ class FormController {
             return res.status(200)
                 .json({
                     status: true,
+                    userLevel: user.level,
                     message: "FORMS_FOUND",
                     total: form.length,
                     totalDocs: form.length,
