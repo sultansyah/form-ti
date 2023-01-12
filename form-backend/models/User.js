@@ -5,7 +5,7 @@ const Schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    noInduk: {
         type: String,
         required: true,
         unique: true,
@@ -13,6 +13,28 @@ const Schema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    jurusan: {
+        type: String,
+        required: true,
+    },
+    prodi: {
+        type: String,
+        required: true,
+    },
+    kotaLahir: {
+        type: String,
+        required: true,
+    },
+    tanggalLahir: {
+        type: Date,
+        required: true,
+    },
+    level: {
+        type: String,
+        enum: ['admin', 'mahasiswa', 'dosen'],
+        default: 'mahasiswa',
+        required: true,
     },
     status: {
         type: String,

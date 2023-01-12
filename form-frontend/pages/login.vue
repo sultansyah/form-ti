@@ -7,13 +7,12 @@
                     <v-alert v-if="isError" color="red lighten-2" dark>
                         {{ $t(message) }}
                     </v-alert>
-
                     <v-form>
                         <v-text-field
-                            name="email"
-                            label="Nim"
+                            name="noInduk"
+                            label="Nomor Induk"
                             type="text"
-                            v-model="form.nim"
+                            v-model="form.noInduk"
                         />
                         <v-text-field
                             name="password"
@@ -35,7 +34,7 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-            <!-- <div>
+            <div>
                 <p class="d-flex align-baseline">
                     Kamu sudah punya akun ?
                     <v-btn
@@ -47,7 +46,7 @@
                         >Register</v-btn
                     >
                 </p>
-            </div> -->
+            </div>
         </v-col>
     </v-row>
 </template>
@@ -62,7 +61,7 @@ export default {
             isError: false,
             message: '',
             form: {
-                nim: '',
+                noInduk: '',
                 password: '',
             },
         }

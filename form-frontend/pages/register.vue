@@ -5,6 +5,24 @@
                 <v-toolbar color="primary" dark>Register</v-toolbar>
                 <v-card-text>
                     <v-form ref="form">
+                        <v-radio-group
+                            label="Level"
+                            v-model="form.level"
+                            mandatory
+                        >
+                            <v-radio
+                                label="Admin"
+                                value="admin"
+                            />
+                            <v-radio
+                                label="Mahasiswa"
+                                value="mahasiswa"
+                            />
+                            <v-radio
+                                label="Dosen"
+                                value="dosen"
+                            />
+                        </v-radio-group>
                         <v-text-field
                             name="fullname"
                             label="Full Name"
@@ -13,12 +31,41 @@
                             v-model="form.fullname"
                         />
                         <v-text-field
-                            name="email"
-                            label="Email"
-                            type="email"
-                            :rules="rules.email"
-                            v-model="form.email"
-                            @keydown="checkEmailExist"
+                            name="jurusan"
+                            label="Jurusan"
+                            type="text"
+                            :rules="rules.jurusan"
+                            v-model="form.jurusan"
+                        />
+                        <v-text-field
+                            name="prodi"
+                            label="Prodi"
+                            type="text"
+                            :rules="rules.prodi"
+                            v-model="form.prodi"
+                        />
+                        <v-text-field
+                            name="kotaLahir"
+                            label="Kota Lahir"
+                            type="text"
+                            :rules="rules.kotaLahir"
+                            v-model="form.kotaLahir"
+                        />
+                        <v-text-field
+                            name="tanggalLahir"
+                            label="Tanggal Lahir"
+                            type="date"
+                            :rules="rules.tanggalLahir"
+                            v-model="form.tanggalLahir"
+                        />
+                        <v-text-field
+                            name="noInduk"
+                            label="Nomor Induk"
+                            type="text"
+                            :rules="rules.noInduk"
+                            v-model="form.noInduk"
+                            @keydown="checkNoIndukExist"
+                            @input="setPassword"
                         />
                         <v-text-field
                             name="password"
@@ -26,14 +73,10 @@
                             type="password"
                             :rules="rules.password"
                             v-model="form.password"
-                        />
-                        <v-text-field
-                            name="retype_password"
-                            label="Re-Password"
-                            type="password"
-                            :rules="rules.retype_password"
-                            v-model="form.retype_password"
                             @keydown.enter="onSubmit"
+                        />
+                        <v-badge 
+                            content="Password terisi otomatis dengan Nomor Induk"
                         />
                     </v-form>
                 </v-card-text>
@@ -50,15 +93,15 @@
             </v-card>
             <div>
                 <p class="d-flex align-baseline">
-                    Kamu belum punya akun ?
+                    Kamu sudah punya akun ?
                     <v-btn
-                            to="/login"
-                            class="pl-2 btn-no-height btn-auth"
-                            plain
-                            text
-                            :ripple="false"
-                            >Login</v-btn
-                        >
+                        to="/login"
+                        class="pl-2 btn-no-height btn-auth"
+                        plain
+                        text
+                        :ripple="false"
+                        >Login</v-btn
+                    >
                 </p>
             </div>
         </v-col>
@@ -71,45 +114,59 @@ export default {
     middleware: ['unauthenticated'],
     data() {
         return {
-            emailExist: false,
+            noIndukExist: false,
             isDisable: false,
             form: {
                 fullname: '',
-                email: '',
+                noInduk: '',
                 password: '',
-                retype_password: '',
+                level: '',
+                jurusan: '',
+                prodi: '',
+                kotaLahir: '',
+                tanggalLahir: '',
             },
             rules: {
                 fullname: [
                     (v) =>
                         !!v || this.$t('FIELD_REQUIRED', { field: 'Fullname' }),
                 ],
-                email: [
-                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Email' }),
-                    (v) => /.+@.+/.test(v) || this.$t('EMAIL_INVALID'),
-                    (v) => !this.emailExist || this.$t('EMAIL_EXIST'),
+                jurusan: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Jurusan' }),
+                ],
+                prodi: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Prodi' }),
+                ],
+                kotaLahir: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Kota Lahir' }),
+                ],
+                tanggalLahir: [
+                    (v) =>
+                        !!v || this.$t('FIELD_REQUIRED', { field: 'Tanggal Lahir' }),
+                ],
+                noInduk: [
+                    (v) => !!v || this.$t('FIELD_REQUIRED', { field: 'Nomor Induk' }),,
+                    (v) => !this.noIndukExist || this.$t('NO_INDUK_EXIST'),
                 ],
                 password: [
                     (v) =>
                         !!v || this.$t('FIELD_REQUIRED', { field: 'Password' }),
-                    (v) =>
-                        v.length >= 6 ||
-                        this.$t('FIELD_MIN', { field: 'Password', min: 6 }),
-                ],
-                retype_password: [
-                    (v) =>
-                        v === this.form.password ||
-                        this.$t('FIELD_CONFIRM', {
-                            field: 'Password',
-                            confirm: 'Re-Password',
-                        }),
+                    // (v) =>
+                    //     v.length >= 6 ||
+                    //     this.$t('FIELD_MIN', { field: 'Password', min: 6 }),
                 ],
             },
         }
     },
     methods: {
-        checkEmailExist() {
-            this.emailExist = false
+        setPassword(e) {
+            this.form.password = this.form.noInduk
+        },
+        checkNoIndukExist() {
+            this.noIndukExist = false
         },
         onSubmit() {
             if (this.$refs.form.validate()) {
@@ -124,8 +181,8 @@ export default {
                         this.$router.push('/login')
                     })
                     .catch((error) => {
-                        if (error.response.data.message == 'EMAIL_EXIST') {
-                            this.emailExist = true
+                        if (error.response.data.message == 'NO_INDUK_EXIST') {
+                            this.noIndukExist = true
                             this.$refs.form.validate()
                         }
 

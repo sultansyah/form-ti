@@ -11,7 +11,7 @@ class InviteController {
 
             // check is email not found
             const form = await Form.findOne({ _id: req.params.id, userId: req.jwt.id }).select("invites")
-            if(!emailExist) {throw {code: 404, message: "INVITES_NOT_FOUND"}}
+            if(!form) {throw {code: 404, message: "INVITES_NOT_FOUND"}}
 
             return res.status(200)
                 .json({
